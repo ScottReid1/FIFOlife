@@ -1,0 +1,547 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>FAQ — FIFOlife</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@400;600;700;800;900&family=Barlow:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+:root {
+  --ore: #E8540A;
+  --ore-dark: #C0430A;
+  --coal: #0D0D0D;
+  --iron: #181818;
+  --steel: #242426;
+  --dust: #A89880;
+  --white: #F2EDE6;
+  --muted: #555;
+}
+
+html { scroll-behavior: smooth; }
+body { background: var(--coal); color: var(--white); font-family: 'Barlow', sans-serif; overflow-x: hidden; }
+
+body::before {
+  content:''; position:fixed; inset:0;
+  background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.035'/%3E%3C/svg%3E");
+  pointer-events:none; z-index:999; opacity:.6;
+}
+
+/* NAV */
+nav {
+  position:fixed; top:0; left:0; right:0; z-index:200;
+  display:flex; justify-content:space-between; align-items:center;
+  padding:1.1rem 2.5rem;
+  background:rgba(13,13,13,0.9); backdrop-filter:blur(16px);
+  border-bottom:1px solid rgba(232,84,10,0.18);
+}
+.logo {
+  font-family:'Barlow Condensed',sans-serif;
+  font-weight:900; font-size:1.9rem; letter-spacing:-0.02em; color:var(--white);
+  display:flex; align-items:center; text-decoration:none;
+}
+.logo span { color:var(--ore); }
+.logo-dot { width:7px; height:7px; background:var(--ore); border-radius:50%; margin-left:3px; margin-bottom:10px; display:inline-block; animation:blink 2s ease-in-out infinite; }
+@keyframes blink { 0%,100%{opacity:1} 50%{opacity:0.3} }
+
+.nav-links { display:flex; gap:0.3rem; align-items:center; }
+nav a {
+  color:var(--dust); text-decoration:none; font-size:0.8rem;
+  letter-spacing:0.09em; text-transform:uppercase;
+  padding:0.45rem 0.9rem; border-radius:2px; transition:color 0.2s, background 0.2s;
+}
+nav a:hover { color:var(--white); background:rgba(255,255,255,0.05); }
+.nav-cta { background:var(--ore) !important; color:var(--white) !important; font-weight:700 !important; margin-left:0.5rem; }
+.nav-cta:hover { background:var(--ore-dark) !important; }
+.nav-active { color:var(--ore) !important; }
+
+/* HAZARD STRIPE */
+.hazard-stripe {
+  position:fixed; top:0; left:0; right:0; height:3px; z-index:300;
+  background:repeating-linear-gradient(90deg, var(--ore) 0px, var(--ore) 20px, transparent 20px, transparent 40px);
+}
+
+/* PAGE HEADER */
+.page-header {
+  padding:9rem 2.5rem 5rem;
+  position:relative; overflow:hidden;
+}
+
+/* Grid background */
+.page-header::before {
+  content:''; position:absolute; inset:0;
+  background-image:
+    linear-gradient(rgba(232,84,10,0.055) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(232,84,10,0.055) 1px, transparent 1px);
+  background-size:60px 60px;
+  mask-image:radial-gradient(ellipse 70% 100% at 30% 50%, black 0%, transparent 100%);
+  pointer-events:none;
+}
+
+/* BG text */
+.header-bg-text {
+  position:absolute; right:-1%; top:50%; transform:translateY(-50%);
+  font-family:'Barlow Condensed',sans-serif; font-weight:900;
+  font-size:clamp(8rem,18vw,20rem); line-height:1;
+  color:transparent; -webkit-text-stroke:1px rgba(232,84,10,0.07);
+  text-transform:uppercase; letter-spacing:-0.04em;
+  pointer-events:none; user-select:none;
+}
+
+.header-inner { max-width:900px; margin:0 auto; position:relative; z-index:1; }
+
+.header-eyebrow {
+  font-family:'Barlow Condensed',sans-serif; font-size:0.75rem;
+  letter-spacing:0.22em; text-transform:uppercase; color:var(--ore);
+  margin-bottom:1rem; display:flex; align-items:center; gap:0.8rem;
+}
+.header-eyebrow::before { content:''; display:block; width:2.5rem; height:2px; background:var(--ore); }
+
+.page-header h1 {
+  font-family:'Barlow Condensed',sans-serif; font-weight:900;
+  font-size:clamp(3rem,7vw,6rem); text-transform:uppercase;
+  line-height:0.92; letter-spacing:-0.02em; margin-bottom:1.2rem;
+}
+.page-header h1 em { font-style:normal; color:var(--ore); }
+
+.header-sub { color:var(--dust); font-size:1rem; line-height:1.75; max-width:560px; }
+
+/* MAIN */
+.faq-wrap {
+  max-width:900px; margin:0 auto;
+  padding:0 2.5rem 7rem;
+  display:grid; grid-template-columns:280px 1fr; gap:4rem; align-items:start;
+}
+
+/* SIDEBAR NAV */
+.faq-sidebar {
+  position:sticky; top:6rem;
+}
+
+.sidebar-label {
+  font-family:'Barlow Condensed',sans-serif; font-size:0.68rem;
+  letter-spacing:0.2em; text-transform:uppercase; color:var(--muted);
+  margin-bottom:1rem;
+}
+
+.sidebar-link {
+  display:flex; align-items:center; gap:0.6rem;
+  padding:0.65rem 0;
+  border-bottom:1px solid rgba(255,255,255,0.05);
+  color:var(--dust); text-decoration:none;
+  font-size:0.83rem; line-height:1.4;
+  transition:color 0.2s;
+  cursor:pointer; background:none; border:none;
+  border-bottom:1px solid rgba(255,255,255,0.05);
+  text-align:left; width:100%;
+}
+.sidebar-link:last-child { border-bottom:none; }
+.sidebar-link:hover { color:var(--white); }
+.sidebar-link.active { color:var(--ore); }
+
+.sidebar-dot {
+  width:6px; height:6px; border-radius:50%;
+  background:rgba(255,255,255,0.15); flex-shrink:0;
+  transition:background 0.2s;
+}
+.sidebar-link.active .sidebar-dot,
+.sidebar-link:hover .sidebar-dot { background:var(--ore); }
+
+.sidebar-cta {
+  margin-top:2rem; background:var(--ore); border:none;
+  color:var(--white); padding:0.85rem 1.2rem; border-radius:3px;
+  font-family:'Barlow Condensed',sans-serif; font-size:0.95rem;
+  font-weight:700; letter-spacing:0.1em; text-transform:uppercase;
+  cursor:pointer; width:100%; text-decoration:none; display:block;
+  text-align:center; transition:background 0.2s;
+}
+.sidebar-cta:hover { background:var(--ore-dark); }
+
+/* FAQ ITEMS */
+.faq-list { display:flex; flex-direction:column; gap:1px; }
+
+.faq-item {
+  background:var(--iron);
+  border:1px solid rgba(255,255,255,0.06);
+  border-radius:4px;
+  overflow:hidden;
+  margin-bottom:0.8rem;
+  transition:border-color 0.2s;
+}
+.faq-item.open { border-color:rgba(232,84,10,0.3); }
+
+.faq-question {
+  display:flex; justify-content:space-between; align-items:center;
+  padding:1.4rem 1.6rem; cursor:pointer; gap:1rem;
+  transition:background 0.2s;
+}
+.faq-question:hover { background:rgba(232,84,10,0.04); }
+
+.faq-q-left { display:flex; align-items:center; gap:1rem; }
+
+.faq-num {
+  font-family:'Barlow Condensed',sans-serif; font-weight:700;
+  font-size:0.72rem; letter-spacing:0.1em; color:var(--ore);
+  flex-shrink:0;
+}
+
+.faq-q-text {
+  font-family:'Barlow Condensed',sans-serif; font-weight:700;
+  font-size:1.05rem; letter-spacing:0.03em; text-transform:uppercase;
+  line-height:1.2;
+}
+
+.faq-chevron {
+  flex-shrink:0; width:22px; height:22px;
+  border:1.5px solid rgba(255,255,255,0.15); border-radius:50%;
+  display:flex; align-items:center; justify-content:center;
+  transition:transform 0.3s, border-color 0.2s, background 0.2s;
+}
+.faq-item.open .faq-chevron {
+  transform:rotate(180deg);
+  border-color:var(--ore); background:rgba(232,84,10,0.1);
+}
+.faq-chevron svg { color:var(--dust); transition:color 0.2s; }
+.faq-item.open .faq-chevron svg { color:var(--ore); }
+
+/* Accordion body */
+.faq-body {
+  max-height:0; overflow:hidden;
+  transition:max-height 0.4s ease, padding 0.3s ease;
+  padding:0 1.6rem;
+}
+.faq-item.open .faq-body {
+  max-height:600px;
+  padding:0 1.6rem 1.6rem;
+}
+
+.faq-answer {
+  border-top:1px solid rgba(255,255,255,0.06);
+  padding-top:1.2rem; color:var(--dust);
+  font-size:0.9rem; line-height:1.8;
+}
+.faq-answer p + p { margin-top:0.8rem; }
+
+.faq-answer strong { color:var(--white); font-weight:600; }
+
+.faq-answer .highlight-box {
+  background:rgba(232,84,10,0.08); border:1px solid rgba(232,84,10,0.2);
+  border-radius:3px; padding:0.9rem 1.1rem; margin-top:1rem;
+  font-size:0.85rem; line-height:1.6;
+}
+.faq-answer .highlight-box strong { color:var(--ore); }
+
+/* Tag badge inside answers */
+.answer-tag {
+  display:inline-block; background:rgba(61,170,110,0.12); color:#3DAA6E;
+  border:1px solid rgba(61,170,110,0.25); border-radius:2px;
+  font-size:0.72rem; font-weight:700; letter-spacing:0.08em;
+  text-transform:uppercase; padding:0.15rem 0.5rem; margin-right:0.4rem;
+  vertical-align:middle;
+}
+.answer-tag.orange { background:rgba(232,84,10,0.1); color:var(--ore); border-color:rgba(232,84,10,0.25); }
+
+/* CTA SECTION */
+.faq-cta {
+  background:var(--iron); border:1px solid rgba(232,84,10,0.2);
+  border-radius:4px; padding:2.5rem; text-align:center; margin-top:2rem;
+  position:relative; overflow:hidden;
+}
+.faq-cta::before {
+  content:''; position:absolute; top:0; left:0; right:0; height:3px;
+  background:linear-gradient(90deg, var(--ore), transparent);
+}
+.faq-cta h3 {
+  font-family:'Barlow Condensed',sans-serif; font-weight:800;
+  font-size:1.6rem; text-transform:uppercase; margin-bottom:0.5rem;
+}
+.faq-cta p { color:var(--dust); font-size:0.88rem; line-height:1.6; margin-bottom:1.4rem; }
+.btn-primary {
+  display:inline-flex; align-items:center; gap:0.5rem;
+  background:var(--ore); color:var(--white); text-decoration:none;
+  padding:0.85rem 1.6rem; font-family:'Barlow Condensed',sans-serif;
+  font-size:1rem; font-weight:700; letter-spacing:0.1em; text-transform:uppercase;
+  border-radius:3px; transition:background 0.2s;
+}
+.btn-primary:hover { background:var(--ore-dark); }
+
+/* FOOTER */
+footer { background:var(--coal); border-top:1px solid rgba(255,255,255,0.06); padding:3rem 2.5rem 2rem; }
+.footer-top { display:flex; justify-content:space-between; align-items:flex-start; gap:2rem; flex-wrap:wrap; margin-bottom:2rem; padding-bottom:2rem; border-bottom:1px solid rgba(255,255,255,0.06); }
+.footer-links { display:flex; gap:0.3rem; flex-wrap:wrap; }
+.footer-links a { color:var(--muted); text-decoration:none; font-size:0.8rem; padding:0.35rem 0.7rem; border-radius:2px; transition:color 0.2s; }
+.footer-links a:hover { color:var(--white); }
+.footer-legal { font-size:0.73rem; color:#3A3A3A; line-height:1.65; }
+.footer-legal p + p { margin-top:0.5rem; }
+
+/* ANIMATIONS */
+@keyframes fadeUp { from{opacity:0;transform:translateY(20px)} to{opacity:1;transform:translateY(0)} }
+.faq-item { animation:fadeUp 0.5s ease both; }
+.faq-item:nth-child(1){animation-delay:.05s}
+.faq-item:nth-child(2){animation-delay:.1s}
+.faq-item:nth-child(3){animation-delay:.15s}
+.faq-item:nth-child(4){animation-delay:.2s}
+.faq-item:nth-child(5){animation-delay:.25s}
+.faq-item:nth-child(6){animation-delay:.3s}
+
+/* RESPONSIVE */
+@media(max-width:760px){
+  .faq-wrap{grid-template-columns:1fr; gap:2rem; padding:0 1.5rem 4rem;}
+  .faq-sidebar{position:static;}
+  .page-header{padding:8rem 1.5rem 3rem;}
+  .header-bg-text{display:none;}
+  nav{padding:1rem 1.5rem;}
+  .nav-links a:not(.nav-cta){display:none;}
+}
+</style>
+</head>
+<body>
+
+<div class="hazard-stripe"></div>
+
+<!-- NAV -->
+<nav>
+  <a href="index.html" class="logo">FIFO<span>life</span><span class="logo-dot"></span></a>
+  <div class="nav-links">
+    <a href="index.html#coverage">Coverage</a>
+    <a href="fifolife-calculator.html">Calculate Cover</a>
+    <a href="fifolife-faq.html" class="nav-active">FAQ</a>
+    <a href="index.html#form" class="nav-cta">Get a Callback</a>
+  </div>
+</nav>
+
+<!-- PAGE HEADER -->
+<div class="page-header">
+  <div class="header-bg-text">FAQ</div>
+  <div class="header-inner">
+    <div class="header-eyebrow">Common Questions</div>
+    <h1>Questions FIFO<br>Workers <em>Actually</em> Ask</h1>
+    <p class="header-sub">Straight answers about life insurance, TPD, and income protection — no jargon, no runaround. If you don't see your question here, just ask us directly.</p>
+  </div>
+</div>
+
+<!-- MAIN -->
+<div class="faq-wrap">
+
+  <!-- SIDEBAR -->
+  <aside class="faq-sidebar">
+    <div class="sidebar-label">Jump to question</div>
+    <button class="sidebar-link active" onclick="openFaq(0)"><span class="sidebar-dot"></span>Can I pay by super?</button>
+    <button class="sidebar-link" onclick="openFaq(1)"><span class="sidebar-dot"></span>Is it tax deductible?</button>
+    <button class="sidebar-link" onclick="openFaq(2)"><span class="sidebar-dot"></span>Do I need a medical?</button>
+    <button class="sidebar-link" onclick="openFaq(3)"><span class="sidebar-dot"></span>Underground / explosives cover?</button>
+    <button class="sidebar-link" onclick="openFaq(4)"><span class="sidebar-dot"></span>How much does it cost?</button>
+    <button class="sidebar-link" onclick="openFaq(5)"><span class="sidebar-dot"></span>Are there any fees?</button>
+    <a href="index.html#form" class="sidebar-cta">Get a Free Callback →</a>
+  </aside>
+
+  <!-- FAQ LIST -->
+  <div>
+    <div class="faq-list" id="faq-list">
+
+      <!-- Q1 -->
+      <div class="faq-item open" id="faq-0">
+        <div class="faq-question" onclick="toggleFaq(0)">
+          <div class="faq-q-left">
+            <span class="faq-num">01</span>
+            <span class="faq-q-text">Can I pay for my insurance through my super?</span>
+          </div>
+          <div class="faq-chevron">
+            <svg width="12" height="12" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><polyline points="6 9 12 15 18 9"/></svg>
+          </div>
+        </div>
+        <div class="faq-body">
+          <div class="faq-answer">
+            <p><span class="answer-tag">Yes</span> In most cases, <strong>yes</strong> — life insurance, TPD, and some income protection policies can be held inside your superannuation fund and paid from your super balance. This means the premiums come out of your super rather than your take-home pay, which many FIFO workers prefer.</p>
+            <p>There are some important trade-offs to understand though. Income protection held inside super may have a shorter benefit period or different tax treatment compared to a policy held outside super. TPD definitions can also be more restrictive when held inside super.</p>
+            <div class="highlight-box">
+              <strong>FIFO tip:</strong> If you're on a high site income, it's often worth comparing super-funded cover versus personally-funded cover — the tax treatment can make a significant difference to your out-of-pocket cost. Your Nexa adviser will walk you through both options.
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Q2 -->
+      <div class="faq-item" id="faq-1">
+        <div class="faq-question" onclick="toggleFaq(1)">
+          <div class="faq-q-left">
+            <span class="faq-num">02</span>
+            <span class="faq-q-text">Can I claim my premiums on tax?</span>
+          </div>
+          <div class="faq-chevron">
+            <svg width="12" height="12" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><polyline points="6 9 12 15 18 9"/></svg>
+          </div>
+        </div>
+        <div class="faq-body">
+          <div class="faq-answer">
+            <p>It depends on the type of cover and how it's structured:</p>
+            <p><strong>Income Protection:</strong> <span class="answer-tag">Generally Yes</span> Premiums for personally-held income protection insurance are generally tax deductible in Australia, because the benefit you'd receive is also treated as taxable income.</p>
+            <p><strong>Life Insurance & TPD:</strong> <span class="answer-tag orange">Generally No</span> Premiums for life cover and TPD held outside super are usually <strong>not</strong> tax deductible, as the payout is typically tax-free.</p>
+            <p><strong>Held inside super:</strong> The super fund may be able to claim a tax deduction, which is one reason super-funded premiums can be cost-effective.</p>
+            <div class="highlight-box">
+              <strong>Important:</strong> Tax rules are complex and your situation is individual. Always speak with a registered tax adviser or your accountant about what applies to you. Your Nexa adviser can explain how each structure works and let your accountant assess the tax impact.
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Q3 -->
+      <div class="faq-item" id="faq-2">
+        <div class="faq-question" onclick="toggleFaq(2)">
+          <div class="faq-q-left">
+            <span class="faq-num">03</span>
+            <span class="faq-q-text">Do I have to do a medical to get covered?</span>
+          </div>
+          <div class="faq-chevron">
+            <svg width="12" height="12" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><polyline points="6 9 12 15 18 9"/></svg>
+          </div>
+        </div>
+        <div class="faq-body">
+          <div class="faq-answer">
+            <p><strong>Not always</strong> — and often not at all for standard cover amounts. Many life insurance applications in Australia are assessed on a health questionnaire only, with no blood tests or GP visits required.</p>
+            <p>Whether a medical is required depends on a few factors:</p>
+            <p><strong>Cover amount:</strong> Higher cover amounts (typically above $1M–$2M for life cover) may trigger a requirement for blood tests or a medical exam.</p>
+            <p><strong>Your age:</strong> Older applicants or those applying for high income protection benefits may face additional requirements.</p>
+            <p><strong>Health history:</strong> If your questionnaire flags certain conditions, the insurer may request medical records or a GP report — but this is handled by the adviser and is part of normal underwriting.</p>
+            <div class="highlight-box">
+              <strong>Good news:</strong> Your Nexa adviser knows which insurers have the most straightforward underwriting for FIFO occupations and will help you navigate the process with minimal hassle.
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Q4 -->
+      <div class="faq-item" id="faq-3">
+        <div class="faq-question" onclick="toggleFaq(3)">
+          <div class="faq-q-left">
+            <span class="faq-num">04</span>
+            <span class="faq-q-text">Can I get cover if I work underground or with explosives?</span>
+          </div>
+          <div class="faq-chevron">
+            <svg width="12" height="12" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><polyline points="6 9 12 15 18 9"/></svg>
+          </div>
+        </div>
+        <div class="faq-body">
+          <div class="faq-answer">
+            <p><span class="answer-tag">Yes</span> <strong>Yes — this is exactly what we specialise in.</strong> Underground mining, explosives handling, drilling, and other high-hazard FIFO roles can be covered. The key is knowing which insurers will cover your occupation and at what premium loading.</p>
+            <p>Not all insurers treat hazardous occupations the same way. Some will decline outright or apply heavy premium loadings for underground workers, shot firers, or those working with explosives. Others — particularly those who understand the mining sector — will offer reasonable cover.</p>
+            <p>Because we work with multiple Australian life insurers, your adviser can identify who offers the best terms for your specific role, rather than just going with whoever happens to offer standard FIFO cover.</p>
+            <div class="highlight-box">
+              <strong>Roles we regularly help with:</strong> Underground hard rock miners, open cut operators, shot firers, explosives technicians, drill and blast crews, offshore oil & gas workers, remote construction crews.
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Q5 -->
+      <div class="faq-item" id="faq-4">
+        <div class="faq-question" onclick="toggleFaq(4)">
+          <div class="faq-q-left">
+            <span class="faq-num">05</span>
+            <span class="faq-q-text">How much does FIFO insurance actually cost?</span>
+          </div>
+          <div class="faq-chevron">
+            <svg width="12" height="12" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><polyline points="6 9 12 15 18 9"/></svg>
+          </div>
+        </div>
+        <div class="faq-body">
+          <div class="faq-answer">
+            <p>It varies — and it's often more affordable than people expect, especially when structured correctly. The cost depends on:</p>
+            <p><strong>Your age:</strong> Younger applicants pay lower premiums. The cost of waiting increases significantly as you age.</p>
+            <p><strong>Your occupation:</strong> Hazardous occupations like underground mining typically attract a higher premium loading than, say, a site administrator. But the difference between insurers can be substantial — which is why comparing multiple providers matters.</p>
+            <p><strong>Cover amount and type:</strong> Life cover for $1M is cheaper than $2M. Income protection benefit amounts, waiting periods, and benefit periods all affect the premium.</p>
+            <p><strong>Smoker status and health:</strong> Non-smokers pay significantly less. Certain health conditions can result in exclusions or loadings.</p>
+            <div class="highlight-box">
+              <strong>A rough guide:</strong> A healthy non-smoking underground miner in their mid-30s might pay anywhere from $80–$200/month for a well-structured combination of life, TPD, and income protection cover. Your actual figure could be higher or lower — the only way to know is to get a comparison done.
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Q6 -->
+      <div class="faq-item" id="faq-5">
+        <div class="faq-question" onclick="toggleFaq(5)">
+          <div class="faq-q-left">
+            <span class="faq-num">06</span>
+            <span class="faq-q-text">Are there any fees for using FIFOlife?</span>
+          </div>
+          <div class="faq-chevron">
+            <svg width="12" height="12" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><polyline points="6 9 12 15 18 9"/></svg>
+          </div>
+        </div>
+        <div class="faq-body">
+          <div class="faq-answer">
+            <p><span class="answer-tag">No fees</span> <strong>No — there are absolutely no fees to you.</strong> FIFOlife and Nexa Life Solutions operate on a commission basis, meaning the insurer pays the adviser a commission when a policy is taken out. You pay nothing on top of your insurance premium.</p>
+            <p>This is standard practice for personal insurance advice in Australia and is fully disclosed as required under the Corporations Act. Your adviser is obligated to act in your best interests under the Best Interests Duty legislation.</p>
+            <div class="highlight-box">
+              <strong>What this means for you:</strong> You get access to a licensed FIFO insurance specialist, a comparison across multiple Australian life insurers, and ongoing policy support — at no direct cost to you. The advice is free. The comparison is free. Getting a callback is free.
+            </div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+
+    <!-- BOTTOM CTA -->
+    <div class="faq-cta">
+      <h3>Still Have Questions?</h3>
+      <p>Your situation is unique. A Nexa specialist will call you, answer your questions, and compare policies from multiple Australian life insurers — no fees, no obligation.</p>
+      <a href="index.html#form" class="btn-primary">
+        <svg width="15" height="15" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path d="M22 16.92v3a2 2 0 01-2.18 2 19.79 19.79 0 01-8.63-3.07A19.5 19.5 0 013.5 12a19.79 19.79 0 01-3.07-8.67A2 2 0 012.4 1.19h3a2 2 0 012 1.72 12.84 12.84 0 00.7 2.81 2 2 0 01-.45 2.11L6.5 8.5a16 16 0 006 6l1.27-1.27a2 2 0 012.11-.45 12.84 12.84 0 002.81.7A2 2 0 0122 16.92z"/></svg>
+        Request My Free Callback
+      </a>
+    </div>
+  </div>
+
+</div>
+
+<!-- FOOTER -->
+<footer>
+  <div class="footer-top">
+    <a href="index.html" class="logo" style="text-decoration:none;">FIFO<span>life</span><span class="logo-dot"></span></a>
+    <div class="footer-links">
+      <a href="#">Privacy Policy</a>
+      <a href="#">Terms of Use</a>
+      <a href="fifolife-faq.html">FAQ</a>
+      <a href="#">Contact</a>
+    </div>
+  </div>
+  <div class="footer-legal">
+    <p>FIFOlife is owned and operated by Vivi Protection Advice. Referrals are made to Nexa Life Solutions Pty Ltd (Nexa) ABN 85 672 917 896, Australian Financial Services Licence 563622.</p>
+    <p>Any information or advice found on this website is general in nature and does not consider your individual needs or circumstances. Because of this, you should carefully consider whether this information is appropriate for you before acting on it. Refer to the relevant Product Disclosure Statement (PDS) and Target Market Determination (TMD) for full benefit details, terms, conditions and exclusions for each of our insurance partners. A copy of each PDS and TMD is available by contacting us.</p>
+    <p style="margin-top:0.8rem;color:#2D2D2D;">© 2026 Vivi Protection Advice. All rights reserved.</p>
+  </div>
+</footer>
+
+<script>
+  const items = document.querySelectorAll('.faq-item');
+  const sideLinks = document.querySelectorAll('.sidebar-link');
+
+  function toggleFaq(index) {
+    const item = document.getElementById('faq-' + index);
+    const isOpen = item.classList.contains('open');
+
+    // Close all
+    items.forEach(i => i.classList.remove('open'));
+    sideLinks.forEach(l => l.classList.remove('active'));
+
+    // Open clicked if it was closed
+    if (!isOpen) {
+      item.classList.add('open');
+      sideLinks[index].classList.add('active');
+    }
+  }
+
+  function openFaq(index) {
+    items.forEach(i => i.classList.remove('open'));
+    sideLinks.forEach(l => l.classList.remove('active'));
+    const item = document.getElementById('faq-' + index);
+    item.classList.add('open');
+    sideLinks[index].classList.add('active');
+    item.scrollIntoView({ behavior: 'smooth', block: 'start' });
+  }
+</script>
+</body>
+</html>
